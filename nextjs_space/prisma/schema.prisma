@@ -87,3 +87,21 @@ model AboutUs {
 
   @@map("about_us")
 }
+
+model Project {
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String
+  category       String
+  status         String   // "Completed" or "Ongoing"
+  location       String
+  date           String
+  image          String
+  features       String   // JSON string array
+  featured       Boolean  @default(false) // Whether to show on main page
+  display_order  Int      @default(0)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@map("projects")
+}

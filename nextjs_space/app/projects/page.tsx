@@ -1,116 +1,74 @@
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { Calendar, MapPin, Wrench, ArrowRight, CheckCircle } from 'lucide-react'
+'use client';
 
-const projects = [
-  {
-    id: 1,
-    title: 'Automotive Manufacturing Plant Automation',
-    category: 'System Integration',
-    status: 'Completed',
-    location: 'Laguna, Philippines',
-    date: '2024',
-    image: 'https://www.iqsdirectory.com/articles/factory-automation/factory-automation/factory-automation-system-for-automobiles.jpg',
-    description: 'Complete automation system for automotive assembly line including PLC programming, HMI development, and SCADA integration.',
-    features: [
-      'PLC-based control system',
-      'Real-time monitoring dashboard',
-      'Automated quality control',
-      'Production data analytics',
-      'Safety interlocks system'
-    ]
-  },
-  {
-    id: 2,
-    title: 'Industrial Electrical Infrastructure Upgrade',
-    category: 'Electrical Installation',
-    status: 'Completed',
-    location: 'Cavite, Philippines',
-    date: '2024',
-    image: 'https://belmarelectrical.com/wp-content/uploads/2020/11/Electrical-Engineering-for-Manufacturing-and-Industry-new.jpg',
-    description: 'Comprehensive electrical system upgrade for manufacturing facility including main distribution panels and motor control centers.',
-    features: [
-      'Main distribution panel installation',
-      'Motor control center assembly',
-      'Power factor correction',
-      'Emergency backup systems',
-      'Electrical safety compliance'
-    ]
-  },
-  {
-    id: 3,
-    title: '24/7 Control Room Operations Center',
-    category: 'Monitoring Systems',
-    status: 'Ongoing',
-    location: 'Metro Manila, Philippines',
-    date: '2024',
-    image: 'https://new.abb.com/images/default-source/abb-custom-archive/control-room-design-cover-croped-2-(2)e01852f4c1f463c09537ff0000433538.jpg?sfvrsn=deec310c_0',
-    description: 'State-of-the-art control room setup with advanced monitoring systems for continuous industrial process supervision.',
-    features: [
-      'Multi-screen monitoring setup',
-      'Centralized alarm management',
-      'Remote system access',
-      'Historical data logging',
-      'Redundant communication systems'
-    ]
-  },
-  {
-    id: 4,
-    title: 'Electrical Substation Automation',
-    category: 'Power Systems',
-    status: 'Completed',
-    location: 'Batangas, Philippines',
-    date: '2023',
-    image: 'https://studyelectrical.com/wp-content/uploads/2019/04/Substation-components-equipment-layout.jpg',
-    description: 'Automation and control system implementation for electrical substation with protective relay coordination.',
-    features: [
-      'Protective relay systems',
-      'SCADA integration',
-      'Remote monitoring capability',
-      'Fault analysis tools',
-      'Load management system'
-    ]
-  },
-  {
-    id: 5,
-    title: 'Smart Factory Production Line',
-    category: 'Industry 4.0',
-    status: 'Ongoing',
-    location: 'Bulacan, Philippines',
-    date: '2024',
-    image: 'https://assets.new.siemens.com/siemens/assets/api/uuid:fdfd8d31-2a25-4781-ad9f-94e915af5d62/operation:download/AdobeStock-468739675.jpeg',
-    description: 'Implementation of smart manufacturing concepts with IoT integration and predictive maintenance systems.',
-    features: [
-      'IoT sensor integration',
-      'Predictive maintenance',
-      'Machine learning analytics',
-      'Energy optimization',
-      'Quality tracking system'
-    ]
-  },
-  {
-    id: 6,
-    title: 'Industrial Building Electrical System',
-    category: 'Infrastructure',
-    status: 'Completed',
-    location: 'Pampanga, Philippines',
-    date: '2023',
-    image: 'https://msb-engineering.com/wp-content/uploads/2011/06/INDUSTRIAL-ELECTRICAL-SYSTEM-OPTIMIZATION-THROUGH-ANALYSIS-scaled.jpeg',
-    description: 'Complete electrical system design and installation for new industrial facility with energy-efficient solutions.',
-    features: [
-      'Energy-efficient lighting',
-      'Power distribution optimization',
-      'Motor drive systems',
-      'Building automation integration',
-      'Sustainability compliance'
-    ]
-  }
-]
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Calendar, MapPin, Wrench, ArrowRight, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  status: string;
+  location: string;
+  date: string;
+  image: string;
+  features: string;
+  featured: boolean;
+  display_order: number;
+}
 
 export default function ProjectsPage() {
-  const completedProjects = projects.filter(p => p.status === 'Completed')
-  const ongoingProjects = projects.filter(p => p.status === 'Ongoing')
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [showAllCompleted, setShowAllCompleted] = useState(false);
+  const [showAllOngoing, setShowAllOngoing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch('/api/projects');
+        const data = await response.json();
+        if (data.success) {
+          setAllProjects(data.projects);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
+          <p className="mt-4 text-gray-600">Loading projects...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const completedProjects = allProjects.filter(p => p.status === 'Completed');
+  const ongoingProjects = allProjects.filter(p => p.status === 'Ongoing');
+
+  // Get featured projects (up to 4 for completed, 2 for ongoing)
+  const featuredCompleted = completedProjects.filter(p => p.featured).slice(0, 4);
+  const featuredOngoing = ongoingProjects.filter(p => p.featured).slice(0, 2);
+
+  // Determine which projects to display
+  const displayedCompleted = showAllCompleted ? completedProjects : featuredCompleted;
+  const displayedOngoing = showAllOngoing ? ongoingProjects : featuredOngoing;
+
+  const hasMoreCompleted = completedProjects.length > 4;
+  const hasMoreOngoing = ongoingProjects.length > 2;
 
   return (
     <div className="min-h-screen">
@@ -158,7 +116,9 @@ export default function ProjectsPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {completedProjects.map((project, index) => (
+            {displayedCompleted.map((project) => {
+              const features = JSON.parse(project.features);
+              return (
               <div 
                 key={project.id}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
@@ -206,7 +166,7 @@ export default function ProjectsPage() {
                   <div className="space-y-2">
                     <h4 className="text-sm font-semibold text-gray-900">Key Features:</h4>
                     <div className="space-y-1">
-                      {project.features.slice(0, 3).map((feature, idx) => (
+                      {features.slice(0, 3).map((feature: string, idx: number) => (
                         <div key={idx} className="flex items-center text-sm text-gray-700">
                           <CheckCircle className="w-4 h-4 text-yellow-500 mr-2 flex-shrink-0" />
                           {feature}
@@ -216,8 +176,34 @@ export default function ProjectsPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
+
+          {/* See More Button for Completed Projects */}
+          {!showAllCompleted && hasMoreCompleted && (
+            <div className="mt-8 text-center">
+              <Button
+                onClick={() => setShowAllCompleted(true)}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center group"
+              >
+                See More Completed Projects
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          )}
+
+          {showAllCompleted && (
+            <div className="mt-8 text-center">
+              <Button
+                onClick={() => setShowAllCompleted(false)}
+                variant="outline"
+                className="px-8 py-3 rounded-lg font-semibold"
+              >
+                Show Less
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -234,7 +220,9 @@ export default function ProjectsPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {ongoingProjects.map((project, index) => (
+            {displayedOngoing.map((project) => {
+              const features = JSON.parse(project.features);
+              return (
               <div 
                 key={project.id}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
@@ -282,7 +270,7 @@ export default function ProjectsPage() {
                   <div className="space-y-2">
                     <h4 className="text-sm font-semibold text-gray-900">Key Features:</h4>
                     <div className="space-y-1">
-                      {project.features.slice(0, 3).map((feature, idx) => (
+                      {features.slice(0, 3).map((feature: string, idx: number) => (
                         <div key={idx} className="flex items-center text-sm text-gray-700">
                           <Wrench className="w-4 h-4 text-blue-500 mr-2 flex-shrink-0" />
                           {feature}
@@ -292,8 +280,34 @@ export default function ProjectsPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
+
+          {/* See More Button for Ongoing Projects */}
+          {!showAllOngoing && hasMoreOngoing && (
+            <div className="mt-8 text-center">
+              <Button
+                onClick={() => setShowAllOngoing(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center group"
+              >
+                See More Ongoing Projects
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          )}
+
+          {showAllOngoing && (
+            <div className="mt-8 text-center">
+              <Button
+                onClick={() => setShowAllOngoing(false)}
+                variant="outline"
+                className="px-8 py-3 rounded-lg font-semibold"
+              >
+                Show Less
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
