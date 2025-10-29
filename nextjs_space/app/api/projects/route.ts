@@ -4,10 +4,13 @@ import { prisma } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-// Public API - Get all projects
+// Public API - Get only featured projects
 export async function GET() {
   try {
     const projects = await prisma.project.findMany({
+      where: {
+        featured: true, // Only fetch featured projects
+      },
       include: {
         images: {
           orderBy: {

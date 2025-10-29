@@ -64,16 +64,17 @@ export default function ProjectsPage() {
     );
   }
 
+  // All projects from API are already featured
   const completedProjects = allProjects.filter(p => p.status === 'Completed');
   const ongoingProjects = allProjects.filter(p => p.status === 'Ongoing');
 
-  // Get featured projects (up to 4 for completed, 2 for ongoing)
-  const featuredCompleted = completedProjects.filter(p => p.featured).slice(0, 4);
-  const featuredOngoing = ongoingProjects.filter(p => p.featured).slice(0, 2);
+  // Show initial set (up to 4 for completed, 2 for ongoing)
+  const initialCompleted = completedProjects.slice(0, 4);
+  const initialOngoing = ongoingProjects.slice(0, 2);
 
   // Determine which projects to display
-  const displayedCompleted = showAllCompleted ? completedProjects : featuredCompleted;
-  const displayedOngoing = showAllOngoing ? ongoingProjects : featuredOngoing;
+  const displayedCompleted = showAllCompleted ? completedProjects : initialCompleted;
+  const displayedOngoing = showAllOngoing ? ongoingProjects : initialOngoing;
 
   const hasMoreCompleted = completedProjects.length > 4;
   const hasMoreOngoing = ongoingProjects.length > 2;
