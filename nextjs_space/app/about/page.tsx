@@ -2,6 +2,10 @@
 import Image from 'next/image';
 import { prisma } from '@/lib/db';
 
+// Force dynamic rendering - no caching
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getAboutUsContent() {
   try {
     const aboutUs = await prisma.aboutUs.findFirst({

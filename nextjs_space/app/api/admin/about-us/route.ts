@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,6 +62,9 @@ export async function PUT(req: NextRequest) {
         updated_by: session.user?.email || 'admin',
       },
     });
+
+    // Revalidate the About Us page to clear the cache
+    revalidatePath('/about');
 
     return NextResponse.json({ success: true, content: aboutUs.content });
   } catch (error: any) {
