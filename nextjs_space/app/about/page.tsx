@@ -22,38 +22,41 @@ export default async function AboutPage() {
   const content = await getAboutUsContent();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
+      <section className="relative py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">About Us</h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Learn more about Radians Automation and Control Solutions, Inc.
+          <div className="text-center mb-12">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+              About <span className="text-yellow-400">Us</span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Leading provider of industrial automation and electrical control solutions, 
+              delivering engineering excellence and innovative solutions.
             </p>
           </div>
         </div>
       </section>
 
       {/* Content Section */}
-      <section className="py-16">
+      <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="prose prose-lg max-w-none">
-            {content ? (
-              <p className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+          {content ? (
+            <div className="prose prose-lg max-w-none">
+              <p className="whitespace-pre-wrap text-gray-700 text-lg leading-relaxed">
                 {content}
               </p>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-500">Content not available</p>
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">Content not available</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Mission, Vision, Values Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Mission */}
@@ -136,13 +139,11 @@ export default async function AboutPage() {
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Core Values
               </h3>
-              <ul className="text-gray-700 space-y-2">
-                <li>• Excellence in Engineering</li>
-                <li>• Customer-Centric Approach</li>
-                <li>• Integrity and Professionalism</li>
-                <li>• Innovation and Continuous Improvement</li>
-                <li>• Commitment to Quality</li>
-              </ul>
+              <p className="text-gray-700">
+                We uphold excellence in engineering, integrity, and professionalism 
+                while maintaining a customer-centric approach. Our commitment to 
+                quality drives continuous innovation and improvement in every solution we deliver.
+              </p>
             </div>
           </div>
         </div>
