@@ -7,12 +7,113 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Starting seed...');
 
-  // Create default test admin user (for internal testing - credentials never shown to users)
+  // ===== DEVELOPER ROLE =====
+  const developerPassword = await bcrypt.hash('RadDeveloper2024!Dennis#Secure', 10);
+  const developer = await prisma.user.upsert({
+    where: { email: 'denniscortezdiamante@gmail.com' },
+    update: {
+      password: developerPassword,
+      role: 'developer',
+    },
+    create: {
+      email: 'denniscortezdiamante@gmail.com',
+      name: 'Dennis Cortez Diamante',
+      password: developerPassword,
+      role: 'developer',
+    },
+  });
+  console.log('Created developer user:', developer.email);
+
+  // ===== SUPER ADMIN ROLE =====
+  const superAdmin1Password = await bcrypt.hash('RadSuperAdmin2024!Info#Secure', 10);
+  const superAdmin1 = await prisma.user.upsert({
+    where: { email: 'info@radians-automation.com' },
+    update: {
+      password: superAdmin1Password,
+      role: 'super_admin',
+    },
+    create: {
+      email: 'info@radians-automation.com',
+      name: 'Super Admin',
+      password: superAdmin1Password,
+      role: 'super_admin',
+    },
+  });
+  console.log('Created super admin user:', superAdmin1.email);
+
+  const superAdmin2Password = await bcrypt.hash('RadSuperAdmin2024!JayPz#Secure', 10);
+  const superAdmin2 = await prisma.user.upsert({
+    where: { email: 'jaypz23@yahoo.com' },
+    update: {
+      password: superAdmin2Password,
+      role: 'super_admin',
+    },
+    create: {
+      email: 'jaypz23@yahoo.com',
+      name: 'Jay Pz',
+      password: superAdmin2Password,
+      role: 'super_admin',
+    },
+  });
+  console.log('Created super admin user:', superAdmin2.email);
+
+  // Keep old admin account as super_admin
+  const oldAdminPassword = await bcrypt.hash('RadiansAdmin2024!Secure#Phase1', 10);
+  const oldAdmin = await prisma.user.upsert({
+    where: { email: 'admin@radians-automation.com' },
+    update: {
+      password: oldAdminPassword,
+      role: 'super_admin',
+    },
+    create: {
+      email: 'admin@radians-automation.com',
+      name: 'Admin User',
+      password: oldAdminPassword,
+      role: 'super_admin',
+    },
+  });
+  console.log('Created admin user:', oldAdmin.email);
+
+  // ===== ADMIN ROLE =====
+  const admin1Password = await bcrypt.hash('RadAdmin2024!Jordan#Secure', 10);
+  const admin1 = await prisma.user.upsert({
+    where: { email: 'jordan.orgas@radians-automation.com' },
+    update: {
+      password: admin1Password,
+      role: 'admin',
+    },
+    create: {
+      email: 'jordan.orgas@radians-automation.com',
+      name: 'Jordan Orgas',
+      password: admin1Password,
+      role: 'admin',
+    },
+  });
+  console.log('Created admin user:', admin1.email);
+
+  const admin2Password = await bcrypt.hash('RadAdmin2024!Dennis#Secure', 10);
+  const admin2 = await prisma.user.upsert({
+    where: { email: 'dennisdiamante.racsi@gmail.com' },
+    update: {
+      password: admin2Password,
+      role: 'admin',
+    },
+    create: {
+      email: 'dennisdiamante.racsi@gmail.com',
+      name: 'Dennis Diamante',
+      password: admin2Password,
+      role: 'admin',
+    },
+  });
+  console.log('Created admin user:', admin2.email);
+
+  // Keep old test account as admin
   const testPassword = await bcrypt.hash('SecureTest2024!RadiansAuto', 10);
   const testUser = await prisma.user.upsert({
     where: { email: 'john@doe.com' },
     update: {
       password: testPassword,
+      role: 'admin',
     },
     create: {
       email: 'john@doe.com',
@@ -22,22 +123,6 @@ async function main() {
     },
   });
   console.log('Created test admin user:', testUser.email);
-
-  // Create main admin user for the application
-  const adminPassword = await bcrypt.hash('RadiansAdmin2024!Secure#Phase1', 10);
-  const adminUser = await prisma.user.upsert({
-    where: { email: 'admin@radians-automation.com' },
-    update: {
-      password: adminPassword,
-    },
-    create: {
-      email: 'admin@radians-automation.com',
-      name: 'Admin User',
-      password: adminPassword,
-      role: 'admin',
-    },
-  });
-  console.log('Created admin user:', adminUser.email);
 
   // Seed About Us content
   const aboutUsContent = `Radians Automation and Control Solutions, Inc. is a leading provider of industrial automation and electrical control solutions in the Philippines. With years of experience in the industry, we specialize in delivering innovative and reliable automation systems that help businesses optimize their operations and increase productivity.

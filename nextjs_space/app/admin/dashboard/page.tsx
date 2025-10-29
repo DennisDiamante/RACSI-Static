@@ -140,6 +140,23 @@ export default function AdminDashboard() {
             </Card>
           </Link>
 
+          {/* User Management Card */}
+          <Link href="/admin/users">
+            <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-yellow-400">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-yellow-100 p-3 rounded-lg">
+                  <Users className="w-8 h-8 text-yellow-600" />
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                User Management
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Manage users, roles, and permissions
+              </p>
+            </Card>
+          </Link>
+
           {/* Settings Card (Placeholder) */}
           <Card className="p-6 opacity-50 cursor-not-allowed border-2">
             <div className="flex items-center justify-between mb-4">
