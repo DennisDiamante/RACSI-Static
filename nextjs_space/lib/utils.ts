@@ -20,12 +20,14 @@ export function formatDuration(seconds: number): string {
  * - https://drive.google.com/file/d/FILE_ID/view?usp=drive_link
  * - https://drive.google.com/open?id=FILE_ID
  * - https://drive.google.com/uc?id=FILE_ID
+ * 
+ * Converts to lh3.googleusercontent.com format which is more reliable for embedding
  */
 export function convertGoogleDriveUrl(url: string): string {
   if (!url) return url;
 
-  // Check if it's already a direct Google Drive URL
-  if (url.includes('drive.google.com/uc?export=view')) {
+  // Check if it's already a converted URL
+  if (url.includes('lh3.googleusercontent.com') || url.includes('googleusercontent.com')) {
     return url;
   }
 
@@ -44,9 +46,15 @@ export function convertGoogleDriveUrl(url: string): string {
     fileId = openMatch[1];
   }
 
-  // If we found a file ID, convert to direct URL
+  // Format: https://drive.google.com/uc?id=FILE_ID or uc?export=view&id=FILE_ID
+  const ucMatch = url.match(/uc\?.*id=([a-zA-Z0-9_-]+)/);
+  if (ucMatch && !fileId) {
+    fileId = ucMatch[1];
+  }
+
+  // If we found a file ID, convert to googleusercontent URL (more reliable for embedding)
   if (fileId) {
-    return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
   }
 
   // Return original URL if it's not a Google Drive URL
