@@ -214,18 +214,24 @@ export default function UsersPage() {
     return currentUserRole === 'super_admin' || currentUserRole === 'developer';
   };
 
-  const canDeleteUser = (targetRole: string) => {
+  const canDeleteUser = (targetRole: string, targetEmail: string) => {
+    // Developers can delete Super Admins and Admins, but not themselves or other Developers
     if (currentUserRole === 'developer') {
+      if (targetEmail === session?.user?.email) return false; // Can't delete yourself
       return targetRole === 'super_admin' || targetRole === 'admin';
     }
+    // Super Admins can only delete Admins
     if (currentUserRole === 'super_admin') {
-      return targetRole === 'admin';
+      return targetRole === 'admin' && targetEmail !== session?.user?.email;
     }
     return false;
   };
 
   const canChangePassword = (targetEmail: string) => {
-    return currentUserRole === 'developer' || targetEmail === session?.user?.email;
+    // Developers can change passwords of all users
+    if (currentUserRole === 'developer') return true;
+    // Others can only change their own password
+    return targetEmail === session?.user?.email;
   };
 
   if (loading) {
@@ -377,7 +383,7 @@ export default function UsersPage() {
                       Change Password
                     </Button>
                   )}
-                  {canDeleteUser(user.role) && user.email !== session?.user?.email && (
+                  {canDeleteUser(user.role, user.email) && (
                     <Button
                       size="sm"
                       variant="destructive"
