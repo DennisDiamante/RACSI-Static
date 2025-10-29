@@ -20,8 +20,7 @@ export default function Footer() {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-bold">Radians Automation</h3>
-                <p className="text-sm text-gray-400">Control Solutions, Inc.</p>
+                <h3 className="text-base font-bold leading-tight">Radians Automation and Control Solutions, Inc.</h3>
               </div>
             </Link>
             <p className="text-gray-300 text-sm">

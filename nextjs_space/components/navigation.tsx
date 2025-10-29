@@ -35,10 +35,9 @@ export default function Navigation() {
               />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-lg font-bold text-gray-900">
-                Radians Automation
+              <h1 className="text-sm font-bold text-gray-900 leading-tight">
+                Radians Automation and Control Solutions, Inc.
               </h1>
-              <p className="text-xs text-gray-600">Control Solutions, Inc.</p>
             </div>
           </Link>
 
