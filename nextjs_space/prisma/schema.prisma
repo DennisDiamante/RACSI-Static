@@ -1,0 +1,24 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/radians_automation_website/nextjs_space/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Inquiry {
+  id             Int      @id @default(autoincrement())
+  name           String
+  email          String
+  company_name   String
+  contact_number String
+  message        String
+  status         String   @default("unanswered")
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@map("inquiries")
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <rect width="256" height="256" fill="#1a1a1a"/>
+  <path d="M128 40 L128 70 Q128 80 138 80 L148 80 L148 100 L128 100 L128 156 L108 156 L108 176 Q108 186 118 186 L128 186 L128 216 L176 216 L176 186 Q176 176 166 176 L156 176 L156 156 L176 156 L176 100 L156 100 L156 80 Q156 70 166 70 L176 70 L176 40 Z" fill="#d4af37" stroke="#d4af37" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M80 100 L80 70 Q80 60 70 60 L60 60 L60 40 L128 40 L128 70 L108 70 L108 80 Q108 90 118 90 L128 90 L128 156 L80 156 Z" fill="#d4af37" stroke="#d4af37" stroke-width="2" stroke-linejoin="round"/>
+  <text x="128" y="145" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#1a1a1a" text-anchor="middle">RACS</text>
+</svg>
