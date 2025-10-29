@@ -66,8 +66,8 @@ export default function CreateProjectPage() {
       const data = await response.json();
 
       if (data.success) {
-        toast.success('Project created successfully!');
-        router.push('/admin/projects');
+        toast.success('Project created successfully! Redirecting to add images...');
+        router.push(`/admin/projects/edit/${data.project.id}`);
       } else {
         toast.error(data.error || 'Failed to create project');
       }

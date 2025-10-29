@@ -19,6 +19,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { ProjectImageUpload } from '@/components/admin/project-image-upload';
+
+interface ProjectImage {
+  id: string;
+  cloud_storage_path: string;
+  displayOrder: number;
+}
 
 interface Project {
   id: number;
@@ -32,6 +39,7 @@ interface Project {
   features: string;
   featured: boolean;
   display_order: number;
+  images?: ProjectImage[];
 }
 
 export default function EditProjectPage() {
@@ -277,6 +285,14 @@ export default function EditProjectPage() {
                   />
                 </div>
               )}
+            </div>
+
+            {/* Additional Project Images */}
+            <div className="pt-4 border-t border-gray-200">
+              <ProjectImageUpload
+                projectId={formData.id}
+                initialImages={formData.images || []}
+              />
             </div>
 
             {/* Features */}

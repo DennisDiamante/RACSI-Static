@@ -6,6 +6,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, MapPin, Wrench, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ProjectImageGallery } from '@/components/project-image-gallery';
+
+interface ProjectImage {
+  id: string;
+  cloud_storage_path: string;
+  displayOrder: number;
+}
 
 interface Project {
   id: number;
@@ -19,6 +26,7 @@ interface Project {
   features: string;
   featured: boolean;
   display_order: number;
+  images?: ProjectImage[];
 }
 
 export default function ProjectsPage() {
@@ -174,6 +182,11 @@ export default function ProjectsPage() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Project Image Gallery */}
+                  {project.images && project.images.length > 0 && (
+                    <ProjectImageGallery images={project.images} />
+                  )}
                 </div>
               </div>
             );
@@ -278,6 +291,11 @@ export default function ProjectsPage() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Project Image Gallery */}
+                  {project.images && project.images.length > 0 && (
+                    <ProjectImageGallery images={project.images} />
+                  )}
                 </div>
               </div>
             );

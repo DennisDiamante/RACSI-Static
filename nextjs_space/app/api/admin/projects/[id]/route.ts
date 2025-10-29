@@ -24,6 +24,13 @@ export async function GET(
 
     const project = await prisma.project.findUnique({
       where: { id: parseInt(params.id) },
+      include: {
+        images: {
+          orderBy: {
+            displayOrder: 'asc',
+          },
+        },
+      },
     });
 
     if (!project) {

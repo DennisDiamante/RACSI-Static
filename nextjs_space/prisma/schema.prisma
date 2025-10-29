@@ -89,19 +89,33 @@ model AboutUs {
 }
 
 model Project {
-  id             Int      @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   title          String
   description    String
   category       String
-  status         String   // "Completed" or "Ongoing"
+  status         String         // "Completed" or "Ongoing"
   location       String
   date           String
   image          String
-  features       String   // JSON string array
-  featured       Boolean  @default(false) // Whether to show on main page
-  display_order  Int      @default(0)
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  features       String         // JSON string array
+  featured       Boolean        @default(false) // Whether to show on main page
+  display_order  Int            @default(0)
+  images         ProjectImage[]
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
 
   @@map("projects")
+}
+
+model ProjectImage {
+  id                 String   @id @default(uuid())
+  projectId          Int
+  cloud_storage_path String
+  displayOrder       Int      @default(0)
+  created_at         DateTime @default(now())
+  
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@index([projectId])
+  @@map("project_images")
 }

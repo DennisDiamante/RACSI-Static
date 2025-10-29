@@ -8,6 +8,13 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const projects = await prisma.project.findMany({
+      include: {
+        images: {
+          orderBy: {
+            displayOrder: 'asc',
+          },
+        },
+      },
       orderBy: [
         { display_order: 'asc' },
         { created_at: 'desc' },
