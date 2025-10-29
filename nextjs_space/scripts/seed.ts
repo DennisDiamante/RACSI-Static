@@ -8,10 +8,12 @@ async function main() {
   console.log('Starting seed...');
 
   // Create default test admin user (for testing - not to be revealed to users)
-  const testPassword = await bcrypt.hash('johndoe123', 10);
+  const testPassword = await bcrypt.hash('SecureTest2024!RadiansAuto', 10);
   const testUser = await prisma.user.upsert({
     where: { email: 'john@doe.com' },
-    update: {},
+    update: {
+      password: testPassword,
+    },
     create: {
       email: 'john@doe.com',
       name: 'Test Admin',
@@ -21,11 +23,13 @@ async function main() {
   });
   console.log('Created test admin user:', testUser.email);
 
-  // Create requested admin user
-  const adminPassword = await bcrypt.hash('Admin123!', 10);
+  // Create requested admin user with secure password
+  const adminPassword = await bcrypt.hash('RadiansAdmin2024!Secure#Phase1', 10);
   const adminUser = await prisma.user.upsert({
     where: { email: 'admin@radians-automation.com' },
-    update: {},
+    update: {
+      password: adminPassword,
+    },
     create: {
       email: 'admin@radians-automation.com',
       name: 'Admin User',
