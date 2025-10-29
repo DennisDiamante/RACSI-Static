@@ -1,202 +1,148 @@
 
-import Image from 'next/image'
-import { Target, Eye, Award, Users, Clock, Shield } from 'lucide-react'
+import Image from 'next/image';
+import { prisma } from '@/lib/db';
 
-export default function AboutPage() {
+async function getAboutUsContent() {
+  try {
+    const aboutUs = await prisma.aboutUs.findFirst({
+      orderBy: { id: 'asc' },
+    });
+    return aboutUs?.content || '';
+  } catch (error) {
+    console.error('Error fetching About Us content:', error);
+    return '';
+  }
+}
+
+export default async function AboutPage() {
+  const content = await getAboutUsContent();
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <section className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              About <span className="text-yellow-400">Radians Automation</span>
-            </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Pioneering industrial automation and control solutions with engineering excellence, 
-              innovative technology, and unwavering commitment to customer success.
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">About Us</h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Learn more about Radians Automation and Control Solutions, Inc.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Company Background */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-                Engineering Excellence Since Day One
-              </h2>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Radians Automation and Control Solutions, Inc. stands as a trusted leader in the industrial 
-                automation sector, providing comprehensive solutions that drive efficiency, safety, and 
-                innovation across diverse industries throughout the Philippines and beyond.
+      {/* Content Section */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="prose prose-lg max-w-none">
+            {content ? (
+              <p className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                {content}
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Our expertise spans from motor controller assembly to complex system integration, 
-                backed by a team of skilled engineers committed to delivering solutions that exceed 
-                expectations and industry standards.
-              </p>
-              
-              {/* Key Stats */}
-              <div className="grid grid-cols-2 gap-6 pt-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-yellow-500 rounded-xl mx-auto flex items-center justify-center mb-3">
-                    <Users className="w-8 h-8 text-black" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900">Expert Team</h3>
-                  <p className="text-gray-600">Skilled Engineers</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-yellow-500 rounded-xl mx-auto flex items-center justify-center mb-3">
-                    <Clock className="w-8 h-8 text-black" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900">24/7</h3>
-                  <p className="text-gray-600">Technical Support</p>
-                </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500">Content not available</p>
               </div>
-            </div>
-            
-            <div className="relative aspect-[3/2] rounded-2xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://static.vecteezy.com/system/resources/previews/007/424/037/large_2x/professional-engineering-and-worker-team-congratulated-success-by-applaud-their-leader-after-construction-project-complete-and-he-raise-your-hand-happily-photo.jpg"
-                alt="Professional Engineering Team"
-                fill
-                className="object-cover"
-              />
-            </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Mission, Vision, Values */}
-      <section className="py-20 bg-gray-50">
+      {/* Mission, Vision, Values Section */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-              Our Foundation
-            </h2>
-            <p className="text-xl text-gray-600">
-              Built on principles that drive our commitment to excellence
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Mission */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-yellow-500 rounded-xl flex items-center justify-center mb-6">
-                <Target className="w-8 h-8 text-black" />
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="text-yellow-600 mb-4">
+                <svg
+                  className="w-12 h-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Mission</h3>
-              <p className="text-gray-700 leading-relaxed">
-                To deliver high-quality and reliable automation and control solutions that empower 
-                industries to operate smarter, safer, and more efficiently. We commit to providing 
-                responsive technical support, innovative engineering services, and customized systems 
-                integration designed to enhance productivity and profitability for our clients.
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Our Mission
+              </h3>
+              <p className="text-gray-700">
+                To provide innovative and reliable industrial automation
+                solutions that empower businesses to achieve operational
+                excellence and sustainable growth.
               </p>
             </div>
 
             {/* Vision */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-yellow-500 rounded-xl flex items-center justify-center mb-6">
-                <Eye className="w-8 h-8 text-black" />
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="text-yellow-600 mb-4">
+                <svg
+                  className="w-12 h-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Vision</h3>
-              <p className="text-gray-700 leading-relaxed">
-                To be a leading and widely trusted provider of automation and control solutions 
-                in the Philippines and beyond, recognized for engineering excellence, customer 
-                commitment, and continuous innovation in industrial automation technology.
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Our Vision
+              </h3>
+              <p className="text-gray-700">
+                To be the leading provider of industrial automation and control
+                solutions in the Philippines, recognized for our technical
+                expertise, innovation, and commitment to customer success.
               </p>
             </div>
 
             {/* Core Values */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-yellow-500 rounded-xl flex items-center justify-center mb-6">
-                <Award className="w-8 h-8 text-black" />
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="text-yellow-600 mb-4">
+                <svg
+                  className="w-12 h-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                  />
+                </svg>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Core Values</h3>
-              <p className="text-gray-700 leading-relaxed">
-                <strong>Engineering Excellence:</strong> We commit to delivering precise and reliable 
-                automation solutions built on proven engineering standards and continuous technical 
-                improvement, ensuring every project meets the highest quality benchmarks.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="relative aspect-[3/2] rounded-2xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://www.getgenea.com/wp-content/uploads/2022/02/shutterstock_1727882452-scaled.jpg"
-                alt="Modern Office Space"
-                fill
-                className="object-cover"
-              />
-            </div>
-            
-            <div className="space-y-6">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                Why Choose <span className="text-yellow-500">Radians Automation?</span>
-              </h2>
-              
-              <div className="space-y-4">
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <Shield className="w-5 h-5 text-black" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Proven Reliability</h4>
-                    <p className="text-gray-700">
-                      Track record of delivering robust solutions that stand the test of time and harsh industrial environments.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <Target className="w-5 h-5 text-black" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Customized Solutions</h4>
-                    <p className="text-gray-700">
-                      Every project is tailored to meet specific client requirements and industry standards.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <Users className="w-5 h-5 text-black" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Expert Support</h4>
-                    <p className="text-gray-700">
-                      Responsive technical support and comprehensive maintenance services to ensure optimal performance.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <Award className="w-5 h-5 text-black" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Quality Assurance</h4>
-                    <p className="text-gray-700">
-                      Rigorous quality control processes ensure every solution meets international standards.
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Core Values
+              </h3>
+              <ul className="text-gray-700 space-y-2">
+                <li>• Excellence in Engineering</li>
+                <li>• Customer-Centric Approach</li>
+                <li>• Integrity and Professionalism</li>
+                <li>• Innovation and Continuous Improvement</li>
+                <li>• Commitment to Quality</li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
     </div>
-  )
+  );
 }
