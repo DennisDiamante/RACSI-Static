@@ -32,14 +32,17 @@ export async function PUT(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Unauthorized - Please log in again' 
+      }, { status: 401 });
     }
 
     const { content } = await req.json();
 
     if (!content || typeof content !== 'string') {
       return NextResponse.json(
-        { error: 'Invalid content' },
+        { success: false, error: 'Invalid content' },
         { status: 400 }
       );
     }
@@ -48,6 +51,7 @@ export async function PUT(req: NextRequest) {
       where: { id: 1 },
       update: {
         content,
+        updated_at: new Date(),
         updated_by: session.user?.email || 'admin',
       },
       create: {
@@ -57,10 +61,10 @@ export async function PUT(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, content: aboutUs.content });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating About Us:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: error?.message || 'Internal server error' },
       { status: 500 }
     );
   }

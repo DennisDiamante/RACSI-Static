@@ -48,16 +48,26 @@ export default function AboutUsEditorPage() {
         body: JSON.stringify({ content }),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
         toast.success('About Us content updated successfully!');
         setOriginalContent(content);
         setHasChanges(false);
       } else {
-        toast.error('Failed to update content');
+        const errorMessage = data.error || 'Failed to update content';
+        toast.error(errorMessage);
+        
+        // If unauthorized, redirect to login
+        if (response.status === 401) {
+          setTimeout(() => {
+            router.push('/admin/login');
+          }, 2000);
+        }
       }
     } catch (error) {
       console.error('Error saving content:', error);
-      toast.error('Failed to update content');
+      toast.error('Network error - please try again');
     } finally {
       setSaving(false);
     }
