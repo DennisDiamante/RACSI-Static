@@ -19,7 +19,12 @@ export async function GET(
       return NextResponse.json({ error: "Image not found" }, { status: 404 });
     }
 
-    // Get signed URL from S3
+    // If cloud_storage_path is already a full URL (external image), return it directly
+    if (image.cloud_storage_path.startsWith('http://') || image.cloud_storage_path.startsWith('https://')) {
+      return NextResponse.json({ url: image.cloud_storage_path });
+    }
+
+    // Otherwise, get signed URL from S3
     const signedUrl = await downloadFile(image.cloud_storage_path);
 
     return NextResponse.json({ url: signedUrl });

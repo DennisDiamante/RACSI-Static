@@ -2,10 +2,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Upload, Loader2 } from "lucide-react";
+import { X, Upload, Loader2, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import Image from "next/image";
+import { convertGoogleDriveUrl } from "@/lib/utils";
 
 interface ProjectImage {
   id: string;
@@ -28,6 +30,9 @@ export function ProjectImageUpload({
   const [images, setImages] = useState<ProjectImage[]>(initialImages);
   const [uploading, setUploading] = useState(false);
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
+  const [imageUrl, setImageUrl] = useState("");
+  const [addingUrl, setAddingUrl] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState(false);
 
   useEffect(() => {
     // Fetch signed URLs for all images
@@ -139,6 +144,57 @@ export function ProjectImageUpload({
     }
   };
 
+  const handleAddImageUrl = async () => {
+    if (!imageUrl.trim()) {
+      toast.error("Please enter an image URL");
+      return;
+    }
+
+    if (images.length >= 5) {
+      toast.error("Maximum 5 images allowed per project");
+      return;
+    }
+
+    setAddingUrl(true);
+
+    try {
+      // Convert Google Drive URL if needed
+      const convertedUrl = convertGoogleDriveUrl(imageUrl);
+
+      const response = await fetch("/api/admin/projects/images/url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          projectId: projectId.toString(),
+          imageUrl: convertedUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to add image URL");
+      }
+
+      const result = await response.json();
+      setImages((prev) => {
+        const updated = [...prev, result.image];
+        onImagesChange?.(updated);
+        return updated;
+      });
+      setImageUrl("");
+      setShowUrlInput(false);
+      toast.success("Image URL added successfully");
+    } catch (error) {
+      console.error("Error adding image URL:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to add image URL"
+      );
+    } finally {
+      setAddingUrl(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -151,24 +207,35 @@ export function ProjectImageUpload({
           </p>
         </div>
         {images.length < 5 && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => document.getElementById("image-upload")?.click()}
-            disabled={uploading}
-          >
-            {uploading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              <>
-                <Upload className="mr-2 h-4 w-4" />
-                Upload Images
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowUrlInput(!showUrlInput)}
+              disabled={uploading || addingUrl}
+            >
+              <LinkIcon className="mr-2 h-4 w-4" />
+              Add URL
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => document.getElementById("image-upload")?.click()}
+              disabled={uploading || addingUrl}
+            >
+              {uploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload File
+                </>
+              )}
+            </Button>
+          </div>
         )}
       </div>
 
@@ -180,6 +247,49 @@ export function ProjectImageUpload({
         onChange={handleFileSelect}
         className="hidden"
       />
+
+      {/* URL Input */}
+      {showUrlInput && (
+        <div className="flex gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <Input
+            type="url"
+            placeholder="Paste image URL (supports Google Drive links)"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddImageUrl();
+              }
+            }}
+            className="flex-1"
+          />
+          <Button
+            type="button"
+            onClick={handleAddImageUrl}
+            disabled={addingUrl || !imageUrl.trim()}
+          >
+            {addingUrl ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Adding...
+              </>
+            ) : (
+              "Add"
+            )}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setShowUrlInput(false);
+              setImageUrl("");
+            }}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
 
       {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

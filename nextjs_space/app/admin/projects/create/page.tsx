@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { convertGoogleDriveUrl } from '@/lib/utils';
 
 export default function CreateProjectPage() {
   const { status } = useSession() || {};
@@ -53,12 +54,17 @@ export default function CreateProjectPage() {
 
     try {
       setSaving(true);
+      
+      // Convert Google Drive URL if needed
+      const convertedImageUrl = convertGoogleDriveUrl(formData.image);
+      
       const response = await fetch('/api/admin/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
           ...formData,
+          image: convertedImageUrl,
           features: filteredFeatures,
         }),
       });
@@ -226,13 +232,16 @@ export default function CreateProjectPage() {
                 id="image"
                 value={formData.image}
                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                placeholder="Enter image URL"
+                placeholder="Enter image URL (supports Google Drive links)"
                 required
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Supports Google Drive share links - they will be automatically converted
+              </p>
               {formData.image && (
                 <div className="mt-4 relative aspect-video bg-gray-200 rounded-lg overflow-hidden">
                   <Image
-                    src={formData.image}
+                    src={convertGoogleDriveUrl(formData.image)}
                     alt="Preview"
                     fill
                     className="object-cover"

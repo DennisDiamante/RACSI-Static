@@ -97,8 +97,10 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Image not found" }, { status: 404 });
     }
 
-    // Delete from S3
-    await deleteFile(image.cloud_storage_path);
+    // Only delete from S3 if it's not an external URL
+    if (!image.cloud_storage_path.startsWith('http://') && !image.cloud_storage_path.startsWith('https://')) {
+      await deleteFile(image.cloud_storage_path);
+    }
 
     // Delete from database
     await prisma.projectImage.delete({
