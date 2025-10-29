@@ -44,9 +44,33 @@ export default function AboutUsEditorPage() {
       setSaving(true);
       const response = await fetch('/api/admin/about-us', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ content }),
+        credentials: 'include', // Ensure cookies are sent
       });
+
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        let errorMessage = 'Failed to update content';
+        try {
+          const data = await response.json();
+          errorMessage = data.error || errorMessage;
+        } catch (e) {
+          console.error('Failed to parse error response:', e);
+        }
+        
+        toast.error(errorMessage);
+        
+        // If unauthorized, redirect to login
+        if (response.status === 401) {
+          setTimeout(() => {
+            router.push('/admin/login');
+          }, 2000);
+        }
+        return;
+      }
 
       const data = await response.json();
 
@@ -57,17 +81,10 @@ export default function AboutUsEditorPage() {
       } else {
         const errorMessage = data.error || 'Failed to update content';
         toast.error(errorMessage);
-        
-        // If unauthorized, redirect to login
-        if (response.status === 401) {
-          setTimeout(() => {
-            router.push('/admin/login');
-          }, 2000);
-        }
       }
     } catch (error) {
       console.error('Error saving content:', error);
-      toast.error('Network error - please try again');
+      toast.error(`Error: ${error instanceof Error ? error.message : 'Network error - please try again'}`);
     } finally {
       setSaving(false);
     }
