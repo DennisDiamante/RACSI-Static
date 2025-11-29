@@ -4,6 +4,9 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     // Simple authentication - check for a secret key in the URL
