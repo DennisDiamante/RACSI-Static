@@ -1,22 +1,19 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Standalone output for traditional Node.js hosting (Hostinger)
-  output: 'standalone',
-  
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+  output: process.env.NEXT_OUTPUT_MODE,
+  experimental: {
+    outputFileTracingRoot: path.join(__dirname, '../'),
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: false,
   },
-  
-  // Unoptimized images for shared hosting compatibility
-  images: { 
-    unoptimized: true 
-  },
-  
-  // Ensure proper asset handling
-  assetPrefix: process.env.ASSET_PREFIX || '',
+  images: { unoptimized: true },
 };
 
 module.exports = nextConfig;

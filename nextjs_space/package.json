@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NEXT_OUTPUT_MODE=standalone next build",
     "start": "NODE_ENV=production node server.js",
     "lint": "next lint",
     "postinstall": "prisma generate",

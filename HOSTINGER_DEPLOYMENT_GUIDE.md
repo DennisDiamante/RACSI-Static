@@ -117,7 +117,12 @@ yarn prisma generate
 
 #### 3.8 Build Application
 ```bash
+# Build with standalone output mode
+NEXT_OUTPUT_MODE=standalone yarn build
+
+# Or simply:
 yarn build
+# (The build script is already configured with NEXT_OUTPUT_MODE=standalone)
 ```
 
 ---
