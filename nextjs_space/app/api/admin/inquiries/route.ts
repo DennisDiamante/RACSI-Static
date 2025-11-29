@@ -1,8 +1,6 @@
 
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/db'
 
 // Force dynamic rendering - don't try to pre-render during build
 export const dynamic = 'force-dynamic'
@@ -31,8 +29,6 @@ export async function GET() {
       },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 
@@ -60,7 +56,5 @@ export async function PATCH(request: Request) {
       { success: false, error: 'Failed to update inquiry' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
